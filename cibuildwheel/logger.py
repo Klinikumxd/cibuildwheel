@@ -200,13 +200,14 @@ def build_description_from_identifier(identifier: str) -> str:
 
     build_description = ""
 
-    python_interpreter = python_identifier[0:2]
-    python_version = python_identifier[2:]
+    python_interpreter, python_version = re.match(r"(\D+)(\d+)", python_identifier).groups()
 
     if python_interpreter == "cp":
         build_description += "CPython"
     elif python_interpreter == "pp":
         build_description += "PyPy"
+    elif python_interpreter == "nogil":
+        build_description += "nogil"
     else:
         msg = f"unknown python {python_interpreter!r}"
         raise Exception(msg)

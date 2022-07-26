@@ -37,6 +37,7 @@ images = [
     Image("manylinux2014", "pypy_x86_64", "quay.io/pypa/manylinux2014_x86_64", None),
     Image("manylinux2014", "pypy_i686", "quay.io/pypa/manylinux2014_i686", None),
     Image("manylinux2014", "pypy_aarch64", "quay.io/pypa/manylinux2014_aarch64", None),
+    Image("manylinux2014", "nogil_x86_64", "quay.io/nogil/manylinux2014_x86_64", None),
     # manylinux_2_24 images
     Image("manylinux_2_24", "x86_64", "quay.io/pypa/manylinux_2_24_x86_64", None),
     Image("manylinux_2_24", "i686", "quay.io/pypa/manylinux_2_24_i686", None),

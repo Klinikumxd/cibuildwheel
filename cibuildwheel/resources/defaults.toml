@@ -30,6 +30,7 @@ manylinux-s390x-image = "manylinux2014"
 manylinux-pypy_x86_64-image = "manylinux2014"
 manylinux-pypy_i686-image = "manylinux2014"
 manylinux-pypy_aarch64-image = "manylinux2014"
+manylinux-nogil_x86_64-image = "manylinux2014"
 
 musllinux-x86_64-image = "musllinux_1_1"
 musllinux-i686-image = "musllinux_1_1"

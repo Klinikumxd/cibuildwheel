@@ -211,6 +211,22 @@ def setup_rust_cross_compile(
         )
 
 
+def install_nogil(tmp: Path, arch: str, url: str) -> Path:
+    assert arch == "64" and "amd64" in url
+    # Inside the zip file is a directory with the same name
+    exe_filename = url.rsplit("/", 1)[-1]
+    extension = ".exe"
+    assert exe_filename.endswith(extension)
+    installation_path = CIBW_CACHE_PATH / exe_filename[: -len(extension)]
+    with FileLock(str(installation_path) + ".lock"):
+        if not installation_path.exists():
+            nogil_exe = tmp / exe_filename
+            download(url, nogil_exe)
+            installation_path.mkdir()
+            call(nogil_exe, "/quiet", f"TargetDir={installation_path}")
+    return installation_path / "python.exe"
+
+
 def setup_python(
     tmp: Path,
     python_configuration: PythonConfiguration,
@@ -239,6 +255,9 @@ def setup_python(
     elif implementation_id.startswith("pp"):
         assert python_configuration.url is not None
         base_python = install_pypy(tmp, python_configuration.arch, python_configuration.url)
+    elif implementation_id.startswith("nogil"):
+        assert python_configuration.url is not None
+        base_python = install_nogil(tmp, python_configuration.arch, python_configuration.url)
     else:
         msg = "Unknown Python implementation"
         raise ValueError(msg)

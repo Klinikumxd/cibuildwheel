@@ -74,6 +74,9 @@ def container_image_for_python_configuration(config: PythonConfiguration, option
     _, platform_tag = config.identifier.split("-", 1)
     _, platform_arch = platform_tag.split("_", 1)
 
+    if config.identifier.startswith("nogil"):
+        platform_arch = f"nogil_{platform_arch}"
+
     assert build_options.manylinux_images is not None
     assert build_options.musllinux_images is not None
 
@@ -158,7 +161,7 @@ def build_in_container(
         log.step("Running before_all...")
 
         env = container.get_environment()
-        env["PATH"] = f'/opt/python/cp38-cp38/bin:{env["PATH"]}'
+        env["PATH"] = f'/opt/python/nogil39-nogil_39b_x86_64_linux_gnu/bin:{env["PATH"]}'
         env["PIP_DISABLE_PIP_VERSION_CHECK"] = "1"
         env["PIP_ROOT_USER_ACTION"] = "ignore"
         env = before_all_options.environment.as_dictionary(

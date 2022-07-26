@@ -67,6 +67,7 @@ MANYLINUX_ARCHS: Final[tuple[str, ...]] = (
     "s390x",
     "pypy_aarch64",
     "pypy_i686",
+    "nogil_x86_64",
 )
 
 MUSLLINUX_ARCHS: Final[tuple[str, ...]] = (
@@ -246,9 +247,9 @@ class BuildSelector:
     def __call__(self, build_id: str) -> bool:
         # Filter build selectors by python_requires if set
         if self.requires_python is not None:
-            py_ver_str = build_id.split("-")[0]
-            major = int(py_ver_str[2])
-            minor = int(py_ver_str[3:])
+            major, minor = re.match(r'\D+(\d)(\d+)', 'nogil311').groups()
+            major = int(major)
+            minor = int(minor)
             version = Version(f"{major}.{minor}.99")
             if not self.requires_python.contains(version):
                 return False

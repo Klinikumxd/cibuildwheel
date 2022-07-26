@@ -160,6 +160,21 @@ def install_pypy(tmp: Path, url: str) -> Path:
     return installation_path / "bin" / "pypy3"
 
 
+def install_nogil(tmp: Path, url: str) -> Path:
+    nogil_tar_gz = url.rsplit("/", 1)[-1]
+    extension = ".tar.gz"
+    assert nogil_tar_gz.endswith(extension)
+    installation_path = CIBW_CACHE_PATH / nogil_tar_gz[: -len(extension)]
+    with FileLock(str(installation_path) + ".lock"):
+        if not installation_path.exists():
+            downloaded_tar_bz2 = tmp / nogil_tar_gz
+            download(url, downloaded_tar_bz2)
+            installation_path.parent.mkdir(parents=True, exist_ok=True)
+            call("tar", "-C", installation_path.parent, "-xf", downloaded_tar_bz2)
+            downloaded_tar_bz2.unlink()
+    return installation_path / "bin" / "python3"
+
+
 def setup_python(
     tmp: Path,
     python_configuration: PythonConfiguration,
@@ -174,6 +189,8 @@ def setup_python(
         base_python = install_cpython(tmp, python_configuration.version, python_configuration.url)
     elif implementation_id.startswith("pp"):
         base_python = install_pypy(tmp, python_configuration.url)
+    elif implementation_id.startswith("nogil"):
+        base_python = install_nogil(tmp, python_configuration.url)
     else:
         msg = "Unknown Python implementation"
         raise ValueError(msg)
